@@ -3,18 +3,16 @@
 #include <zip.h>
 
 void explorerArchiveZipPassword(const char* cheminArchive, const char* password)
-{
-    struct zip* archive;
-      
-    archive = zip_open(cheminArchive, 0, NULL);
+{   
+    // Définir le mot de passe par défaut
+    zip_set_default_password(archive, password);  
+    
+    struct zip* archive = zip_open(cheminArchive, 0, NULL);
     if (!archive)
     {
         printf("Impossible d'ouvrir l'archive : %s\n", cheminArchive);
-        return -1;
+        return;
     }
-  
-    // Définir le mot de passe par défaut
-    zip_set_default_password(archive, password);
   
     // Obtenir le nombre de fichiers dans le zip
     int numFichiers = zip_get_num_entries(archive, 0);
