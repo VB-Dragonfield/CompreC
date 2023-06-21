@@ -2,8 +2,18 @@
 #include <string.h>
 #include <zip.h>
 
-int extraireFichierArchive(struct zip* archive, const char* cheminFichier, const char* cheminDestination)
+int extraireFichierArchivePassword(const char* cheminArchive, const char* cheminFichier, const char* cheminDestination, const char* password)
 {
+    struct zip* archive = zip_open(cheminArchive, 0, NULL);
+    if (!archive)
+    {
+        printf("Impossible d'ouvrir l'archive : %s\n", cheminArchive);
+        return;
+    }
+    
+    // Définir le mot de passe par défaut
+    zip_set_default_password(archive, password);
+    
     struct zip_file* fichier = zip_fopen(archive, cheminFichier, 0);
     if (!fichier)
     {
