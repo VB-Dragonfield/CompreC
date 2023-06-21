@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <zip.h>
 
-int inclureFichierArchive(struct zip* archive, const char* cheminFichier, const char* cheminDestination)
+int inclureFichierArchive(const char* cheminArchive, const char* cheminFichier, const char* cheminDestination)
 {
     FILE* fichier = fopen(cheminFichier, "rb");
     if (!fichier)
@@ -13,6 +13,13 @@ int inclureFichierArchive(struct zip* archive, const char* cheminFichier, const 
     fseek(fichier, 0, SEEK_END);
     long tailleFichier = ftell(fichier);
     fseek(fichier, 0, SEEK_SET);
+
+    struct zip* archive = zip_open(cheminArchive, 0, NULL);
+    if (!archive)
+    {
+        printf("Impossible d'ouvrir l'archive : %s\n", cheminArchive);
+        return;
+    }
 
     struct zip_source* source = zip_source_file(archive, cheminFichier, 0, -1);
     if (!source)
