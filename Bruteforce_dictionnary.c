@@ -3,7 +3,7 @@
 #include <string.h>
 #include <zip.h>
 
-int bruteForceZipPassword(const char* archivePath, const char* charset, int maxLength, const char* dictionaryPath) {
+int bruteForceZipPasswordDictionnary(const char* archivePath, const char* charset, int maxLength, const char* dictionaryPath) {
     int charsetLength = strlen(charset);
     int* indices = (int*)malloc(maxLength * sizeof(int));
 
