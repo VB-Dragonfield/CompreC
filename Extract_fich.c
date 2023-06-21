@@ -2,8 +2,15 @@
 #include <string.h>
 #include <zip.h>
 
-int extraireFichierArchive(struct zip* archive, const char* cheminFichier, const char* cheminDestination)
+int extraireFichierArchive(const char* cheminArchive, const char* cheminFichier, const char* cheminDestination)
 {
+    struct zip* archive = zip_open(cheminArchive, 0, NULL);
+    if (!archive)
+    {
+        printf("Impossible d'ouvrir l'archive : %s\n", cheminArchive);
+        return;
+    }
+    
     struct zip_file* fichier = zip_fopen(archive, cheminFichier, 0);
     if (!fichier)
     {
