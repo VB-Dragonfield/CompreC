@@ -3,9 +3,8 @@
 #include <string.h>
 #include <zip.h>
 
-int bruteForceZipPasswordDictionnary(const char* archivePath, const char* charset, int maxLength, const char* dictionaryPath) {
-    int charsetLength = strlen(charset);
-    int* indices = (int*)malloc(maxLength * sizeof(int));
+int bruteForceZipPasswordDictionnary(const char* archivePath, const char* dictionaryPath) {
+
 
     struct zip* archive = zip_open(archivePath, 0, 'r');
     if (!archive) {
