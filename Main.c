@@ -15,6 +15,7 @@
 int main(int argc, char* argv[]) {
     const char* help = NULL; // Pointeur vers l'option d'aide
     const char* openArchive = NULL; // Pointeur vers le fichier d'archive à ouvrir
+    const char* testBruteforce = NULL;
     const char* testBruteforceDictionary = NULL; // Pointeur vers le fichier de dictionnaire pour le bruteforce
     const char* usePassword = NULL; // Pointeur vers le mot de passe à utiliser
     const char* fileExtract = NULL; // Pointeur vers le fichier à extraire de l'archive
@@ -32,7 +33,7 @@ int main(int argc, char* argv[]) {
                 openArchive = optarg; // Stocke le chemin vers le fichier d'archive à ouvrir
                 break;
             case 'b':
-                testBruteforce = 1; // Active le test de bruteforce
+                testBruteforce = "1"; // Active le test de bruteforce
                 break;
             case 'd':
                 testBruteforceDictionary = optarg; // Stocke le chemin vers le fichier de dictionnaire pour le bruteforce
