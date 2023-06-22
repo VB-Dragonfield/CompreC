@@ -20,14 +20,16 @@ int main(int argc, char* argv[]) {
     const char* usePassword = NULL; // Pointeur vers le mot de passe à utiliser
     const char* fileExtract = NULL; // Pointeur vers le fichier à extraire de l'archive
     const char* fileInclude = NULL; // Pointeur vers le fichier à inclure dans l'archive
+    const char* cheminDestination = NULL; // Pointeur vers le chemin de destination
     int option;
 
     char charsetMDP[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@_-+/#*$€"; // Ensemble de caractères pour le bruteforce
     int lengthMDP = 24; // Longueur du mot de passe pour le bruteforce
 
-    while ((option = getopt(argc, argv, "ho:bd:p:e:i:")) != -1) { // Boucle pour lire les options de ligne de commande
+    while ((option = getopt(argc, argv, "ho:bD:p:e:i:d:")) != -1) { // Boucle pour lire les options de ligne de commande
         switch (option) {
             case 'h':
+                help = "1"; // Affiche l'aide
                 break;
             case 'o':
                 openArchive = optarg; // Stocke le chemin vers le fichier d'archive à ouvrir
@@ -35,7 +37,7 @@ int main(int argc, char* argv[]) {
             case 'b':
                 testBruteforce = "1"; // Active le test de bruteforce
                 break;
-            case 'd':
+            case 'D':
                 testBruteforceDictionary = optarg; // Stocke le chemin vers le fichier de dictionnaire pour le bruteforce
                 break;
             case 'p':
@@ -47,14 +49,17 @@ int main(int argc, char* argv[]) {
             case 'i':
                 fileInclude = optarg; // Stocke le chemin vers le fichier à inclure dans l'archive
                 break;
+            case 'd':
+                cheminDestination = optarg; // Stocke le chemin vers le fichier à inclure dans l'archive
+                break;
             default:
-                printf("Utilisation :\n-h       Show this help\n-o </chemin/archive.zip>        Open a zip file for browsing\n-b      Try to bruteforce the password\n-d </chemin/file.txt>     Try to bruteforce the password with a dictionary\n-p <password>       Use this password\n-e </chemin/archive/file>        Extract this file\n-i </chemin/file>        Include this file\n");
+                printf("Utilisation :\n-h       Show this help\n-o </chemin/archive.zip>        Open a zip file for browsing\n-b      Try to bruteforce the password\n-D </chemin/file.txt>     Try to bruteforce the password with a dictionary\n-p <password>       Use this password\n-e </chemin/archive/file>        Extract this file\n-i </chemin/file>        Include this file\n-d </chemin/destination>        Destination where extract or include.\n");
                 return 1;
         }
     }
 
     if (help != NULL) {
-        printf("Utilisation :\n-h       Show this help\n-o </chemin/archive.zip>        Open a zip file. if it's the only one option you can browsing.\n-b      Try to bruteforce the password\n-d </chemin/file.txt>     Try to bruteforce the password with a dictionary\n-p <password>       Use this password\n-e </chemin/archive/file>        Extract this file\n-i </chemin/file>        Include this file\n");
+        printf("Utilisation :\n-h       Show this help\n-o </chemin/archive.zip>        Open a zip file for browsing\n-b      Try to bruteforce the password\n-D </chemin/file.txt>     Try to bruteforce the password with a dictionary\n-p <password>       Use this password\n-e </chemin/archive/file>        Extract this file\n-i </chemin/file>        Include this file\n-d </chemin/destination>        Destination where extract or include.\n");
     }
 
     if (openArchive != NULL) {
@@ -74,19 +79,19 @@ int main(int argc, char* argv[]) {
     }
 
     if (openArchive != NULL && usePassword != NULL && fileExtract != NULL) {
-        extraireFichierArchivePassword(openArchive, usePassword, fileExtract); // Extrait un fichier de l'archive avec le mot de passe spécifié
+        extraireFichierArchivePassword(openArchive, fileExtract, cheminDestination, usePassword); // Extrait un fichier de l'archive avec le mot de passe spécifié
     }
 
     if (openArchive != NULL && usePassword != NULL && fileInclude != NULL) {
-        inclureFichierArchivePassword(openArchive, usePassword, fileInclude); // Inclut un fichier dans l'archive avec le mot de passe spécifié
+        inclureFichierArchivePassword(openArchive, fileInclude, cheminDestination, usePassword); // Inclut un fichier dans l'archive avec le mot de passe spécifié
     }
 
     if (openArchive != NULL && fileExtract != NULL) {
-        extraireFichierArchive(openArchive, fileExtract); // Extrait un fichier de l'archive
+        extraireFichierArchive(openArchive, fileExtract, cheminDestination); // Extrait un fichier de l'archive
     }
 
     if (openArchive != NULL && fileInclude != NULL) {
-        inclureFichierArchive(openArchive, fileInclude); // Inclut un fichier dans l'archive
+        inclureFichierArchive(openArchive, fileInclude, cheminDestination); // Inclut un fichier dans l'archive
     }
 
     else
