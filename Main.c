@@ -25,31 +25,28 @@ int main(int argc, char* argv[]) {
     while ((option = getopt(argc, argv, "h:o:b:d:p:e:i:")) != -1) {
         switch (option) {
             case 'h':
-                cheminArchive = optarg;
+                help = optarg;
                 break;
             case 'o':
-                cheminRepertoire = optarg;
+                openArchive = optarg;
                 break;
             case 'b':
-                cheminFichier = optarg;
+                testBruteforce = optarg;
                 break;
             case 'd':
-                cheminDestination = optarg;
+                testBruteforceDictionary = optarg;
                 break;
             case 'p':
-                cheminRepertoire = optarg;
+                usePassword = optarg;
                 break;
             case 'e':
-                cheminFichier = optarg;
+                fileExtract = optarg;
                 break;
             case 'i':
-                cheminDestination = optarg;
+                fileInclude = optarg;
                 break;
             default:
-                printf("Utilisation :\n-h       Show this help\n-o </chemin/archive.zip>        Open a zip file for browsing\n
-                -b      Try to bruteforce the password\n-d </chemin/file.txt>     Try to bruteforce the password with a dictionary\n
-                -p <password>       Use this password\n-e </chemin/archive/file>        Extract this file\n
-                -i </chemin/file>        Include this file\n");
+                printf("Utilisation :\n-h       Show this help\n-o </chemin/archive.zip>        Open a zip file for browsing\n-b      Try to bruteforce the password\n-d </chemin/file.txt>     Try to bruteforce the password with a dictionary\n-p <password>       Use this password\n-e </chemin/archive/file>        Extract this file\n-i </chemin/file>        Include this file\n");
                 return 1;
         }
     }
