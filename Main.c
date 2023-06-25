@@ -4,6 +4,17 @@
 #include <unistd.h>
 #include <zip.h>
 
+
+void explorerArchiveRepertoire(struct zip* archive, const char* cheminRepertoire);
+void explorerArchiveZip(const char* cheminArchive);
+void explorerArchiveZipPassword(const char* cheminArchive, const char* password);
+int extraireFichierArchive(const char* cheminArchive, const char* cheminFichier, const char* cheminDestination);
+int extraireFichierArchivePassword(const char* cheminArchive, const char* cheminFichier, const char* cheminDestination, const char* password);
+int inclureFichierArchive(const char* cheminArchive, const char* cheminFichier, const char* cheminDestination);
+int inclureFichierArchivePassword(const char* cheminArchive, const char* cheminFichier, const char* cheminDestination, const char* password);
+void lireContenuFichierArchive(struct zip* archive, const char* cheminFichier);
+int bruteForceZipPassword(const char* archivePath, const char* charset, int maxLength);
+
 int main(int argc, char* argv[]) {
     const char* help = NULL; // Pointeur vers l'option d'aide
     const char* openArchive = NULL; // Pointeur vers le fichier d'archive à ouvrir
@@ -418,8 +429,9 @@ void lireContenuFichierArchive(struct zip* archive, const char* cheminFichier)
 int bruteForceZipPassword(const char* archivePath, const char* charset, int maxLength) {
     int charsetLength = strlen(charset); // Longueur de l'ensemble de caractères possibles pour le mot de passe
     int* indices = (int*)malloc(maxLength * sizeof(int)); // Tableau d'indices pour générer les combinaisons de caractères
-
-    struct zip* archive = zip_open(archivePath, 0, 'r'); // Ouverture de l'archive en mode lecture seule
+    int err;
+    
+    struct zip* archive = zip_open(archivePath, 0, &err); // Ouverture de l'archive en mode lecture seule
     if (!archive) {
         printf("Erreur lors de l'ouverture de l'archive.\n"); // Affiche une erreur si l'ouverture de l'archive échoue
         return -1;
