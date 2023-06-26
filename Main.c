@@ -109,6 +109,7 @@ int main(int argc, char* argv[]) {
 void explorerArchiveRepertoire(struct zip* archive, const char* cheminRepertoire)
 {
     char answer[];
+
     int numFichiers = zip_get_num_entries(archive, 0); // Obtient le nombre de fichiers dans l'archive
     printf("Nombre de fichiers dans le répertoire : %s - %d\n", cheminRepertoire, numFichiers);
 
@@ -155,6 +156,7 @@ void explorerArchiveRepertoire(struct zip* archive, const char* cheminRepertoire
             lireContenuFichierArchive(archive, answer);
         }
     }  
+
 }
 
 void explorerArchiveZip(const char* cheminArchive)
@@ -193,6 +195,7 @@ void explorerArchiveZip(const char* cheminArchive)
         }
     }
 
+
     printf("\nVoulez vous explorer un répertoire ? Si oui lequel (entrez l'ensemble du chemin au sein de l'archive (ATTENTION SENSIBLE A LA CASSE))\nSinon tapez 'N' :");
     scanf("%s", answer);
     
@@ -208,7 +211,7 @@ void explorerArchiveZip(const char* cheminArchive)
             lireContenuFichierArchive(archive, answer);
         }
     }
-    
+
     zip_close(archive); // Ferme l'archive
 }
 
@@ -216,7 +219,7 @@ void explorerArchiveZipPassword(const char* cheminArchive, const char* password)
 {
     struct zip* archive = zip_open(cheminArchive, 0, NULL); // Ouverture de l'archive ZIP spécifiée par le chemin
     char answer[];
-    
+
     if (!archive)
     {
         printf("Impossible d'ouvrir l'archive : %s\n", cheminArchive); // Affiche un message d'erreur si l'ouverture de l'archive échoue
@@ -549,6 +552,7 @@ int bruteForceZipPassword(const char* archivePath, const char* charset, int maxL
 
     return 0; // Retourne 0 pour indiquer que le processus s'est terminé avec succès
 }
+
 
 int bruteForceZipPasswordDictionnary(const char* archivePath, const char* dictionaryPath) {
 
