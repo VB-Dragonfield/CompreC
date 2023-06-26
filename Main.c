@@ -65,20 +65,12 @@ int main(int argc, char* argv[]) {
         printf("Utilisation :\n-h       Show this help\n-o </chemin/archive.zip>        Open a zip file for browsing\n-b      Try to bruteforce the password\n-D </chemin/file.txt>     Try to bruteforce the password with a dictionary\n-p <password>       Use this password\n-e </chemin/archive/file>        Extract this file\n-i </chemin/file>        Include this file\n-d </chemin/destination>        Destination where extract or include.\n");
     }
 
-    if (openArchive != NULL) {
-        explorerArchiveZip(openArchive); // Explore l'archive spécifiée
-    }
-
     if (testBruteforce != NULL) {
         bruteForceZipPassword(openArchive, charsetMDP, lengthMDP); // Tente le bruteforce du mot de passe de l'archive
     }
 
     if (testBruteforceDictionary != NULL) {
         //bruteForceZipPasswordDictionnary(openArchive, testBruteforceDictionary); // Tente le bruteforce du mot de passe de l'archive avec un dictionnaire
-    }
-
-    if (usePassword != NULL && openArchive != NULL) {
-        explorerArchiveZipPassword(openArchive, usePassword); // Explore l'archive avec le mot de passe spécifié
     }
 
     if (openArchive != NULL && usePassword != NULL && fileExtract != NULL) {
@@ -95,6 +87,14 @@ int main(int argc, char* argv[]) {
 
     if (openArchive != NULL && fileInclude != NULL) {
         inclureFichierArchive(openArchive, fileInclude, cheminDestination); // Inclut un fichier dans l'archive
+    }
+
+    if (openArchive != NULL && usePassword != NULL) {
+        explorerArchiveZipPassword(openArchive, usePassword); // Explore l'archive avec le mot de passe spécifié
+    }
+    
+    if (openArchive != NULL) {
+        explorerArchiveZip(openArchive); // Explore l'archive spécifiée
     }
 
     else
