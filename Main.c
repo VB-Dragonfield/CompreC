@@ -111,14 +111,6 @@ int main(int argc, char* argv[]) {
         exit(0);
     }
 
-    if (openArchive != NULL && usePassword != NULL) {
-        explorerArchiveZipPassword(openArchive, usePassword); // Explore l'archive avec le mot de passe spécifié
-    }
-    
-    if (openArchive != NULL) {
-        explorerArchiveZip(openArchive); // Explore l'archive spécifiée
-    }
-
     else
     {
         printf("***Option(s) manquante(s)***"); // Affiche un message d'erreur si une ou plusieurs options sont manquantes
