@@ -13,8 +13,8 @@ int extraireFichierArchivePassword(const char* cheminArchive, const char* chemin
 int inclureFichierArchive(const char* cheminArchive, const char* cheminFichier, const char* cheminDestination);
 int inclureFichierArchivePassword(const char* cheminArchive, const char* cheminFichier, const char* cheminDestination, const char* password);
 void lireContenuFichierArchive(struct zip* archive, const char* cheminFichier);
-int bruteForceZipPassword(const char* archivePath, const char* charset, int maxLength);
-int bruteForceZipPasswordDictionnary(const char* archivePath, const char* dictionaryPath, int maxLength);
+int bruteForceZipPassword(const char* archivePath, const char* charset, int maxLength, const char* fileDecrypt);
+int bruteForceZipPasswordDictionnary(const char* archivePath, const char* dictionaryPath, const char* fileDecrypt);
 
 int main(int argc, char* argv[]) {
     const char* help = NULL; // Pointeur vers l'option d'aide
@@ -25,12 +25,13 @@ int main(int argc, char* argv[]) {
     const char* fileExtract = NULL; // Pointeur vers le fichier à extraire de l'archive
     const char* fileInclude = NULL; // Pointeur vers le fichier à inclure dans l'archive
     const char* cheminDestination = NULL; // Pointeur vers le chemin de destination
+    const char* fileDecrypt = NULL; // Pointeur vers le fichier à déchiffrer
     int option;
 
-    char charsetMDP[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@_-+/#*$€"; // Ensemble de caractères pour le bruteforce
+    char charsetMDP[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789"; // Ensemble de caractères pour le bruteforce
     int lengthMDP = 24; // Longueur du mot de passe pour le bruteforce
 
-    while ((option = getopt(argc, argv, "ho:bD:p:e:i:d:")) != -1) { // Boucle pour lire les options de ligne de commande
+    while ((option = getopt(argc, argv, "ho:bD:p:e:i:d:f:")) != -1) { // Boucle pour lire les options de ligne de commande
         switch (option) {
             case 'h':
                 help = "1"; // Affiche l'aide
@@ -56,51 +57,63 @@ int main(int argc, char* argv[]) {
             case 'd':
                 cheminDestination = optarg; // Stocke le chemin vers le fichier à inclure dans l'archive
                 break;
+            case 'f':
+            	fileDecrypt = optarg; // Stocke le chemin vers le fichier à déchiffrer
+            	break;
             default:
-                printf("Utilisation :\n-h       Show this help\n-o </chemin/archive.zip>        Open a zip file for browsing\n-b      Try to bruteforce the password\n-D </chemin/file.txt>     Try to bruteforce the password with a dictionary\n-p <password>       Use this password\n-e </chemin/archive/file>        Extract this file\n-i </chemin/file>        Include this file\n-d </chemin/destination>        Destination where extract or include.\n");
+                printf("Utilisation :\n-h       Show this help\n-o </chemin/archive.zip>        Open a zip file for browsing\n-b      Try to bruteforce the password\n-D </chemin/file.txt>     Try to bruteforce the password with a dictionary\n-p <password>       Use this password\n-e </chemin/archive/file>        Extract this file\n-i </chemin/file>        Include this file\n-d </chemin/destination>        Destination where extract or include.\n-f <filename>	Filename to decrypt\n");
                 return 1;
         }
     }
 
     if (help != NULL) {
-        printf("Utilisation :\n-h       Show this help\n-o </chemin/archive.zip>        Open a zip file for browsing\n-b      Try to bruteforce the password\n-D </chemin/file.txt>     Try to bruteforce the password with a dictionary\n-p <password>       Use this password\n-e </chemin/archive/file>        Extract this file\n-i </chemin/file>        Include this file\n-d </chemin/destination>        Destination where extract or include.\n");
+        printf("Utilisation :\n-h       Show this help\n-o </chemin/archive.zip>        Open a zip file for browsing\n-b      Try to bruteforce the password\n-D </chemin/file.txt>     Try to bruteforce the password with a dictionary\n-p <password>       Use this password\n-e </chemin/archive/file>        Extract this file\n-i </chemin/file>        Include this file\n-d </chemin/destination>        Destination where extract or include.\n-f <filename>	Filename to decrypt\n");
     }
 
-    if (testBruteforce != NULL) {
-        bruteForceZipPassword(openArchive, charsetMDP, lengthMDP); // Tente le bruteforce du mot de passe de l'archive
+    if (openArchive != NULL && testBruteforce != NULL && fileDecrypt != NULL) {
+        bruteForceZipPassword(openArchive, charsetMDP, lengthMDP, fileDecrypt); // Tente le bruteforce du mot de passe de l'archive
+        exit(0);
     }
 
-    if (testBruteforceDictionary != NULL) {
-        bruteForceZipPasswordDictionnary(openArchive, testBruteforceDictionary, lengthMDP); // Tente le bruteforce du mot de passe de l'archive avec un dictionnaire
+    if (openArchive != NULL && testBruteforceDictionary != NULL && fileDecrypt != NULL) {
+        bruteForceZipPasswordDictionnary(openArchive, testBruteforceDictionary, fileDecrypt); // Tente le bruteforce du mot de passe de l'archive avec un dictionnaire
+        exit(0);
     }
 
     if (openArchive != NULL && usePassword != NULL && fileExtract != NULL) {
         extraireFichierArchivePassword(openArchive, fileExtract, cheminDestination, usePassword); // Extrait un fichier de l'archive avec le mot de passe spécifié
+        exit(0);
     }
 
     if (openArchive != NULL && usePassword != NULL && fileInclude != NULL) {
         inclureFichierArchivePassword(openArchive, fileInclude, cheminDestination, usePassword); // Inclut un fichier dans l'archive avec le mot de passe spécifié
+        exit(0);
     }
 
     if (openArchive != NULL && fileExtract != NULL) {
         extraireFichierArchive(openArchive, fileExtract, cheminDestination); // Extrait un fichier de l'archive
+        exit(0);
     }
 
     if (openArchive != NULL && fileInclude != NULL) {
         inclureFichierArchive(openArchive, fileInclude, cheminDestination); // Inclut un fichier dans l'archive
+        exit(0);
     }
 
     if (openArchive != NULL && usePassword != NULL) {
         explorerArchiveZipPassword(openArchive, usePassword); // Explore l'archive avec le mot de passe spécifié
+        exit(0);
     }
     
     if (openArchive != NULL) {
         explorerArchiveZip(openArchive); // Explore l'archive spécifiée
+        exit(0);
     }
 
     else
     {
         printf("***Option(s) manquante(s)***"); // Affiche un message d'erreur si une ou plusieurs options sont manquantes
+        exit(0);
     }
     
 
@@ -483,7 +496,7 @@ void lireContenuFichierArchive(struct zip* archive, const char* cheminFichier)
     zip_fclose(fichier); // Fermeture du fichier dans l'archive
 }
 
-int bruteForceZipPassword(const char* archivePath, const char* charset, int maxLength) {
+int bruteForceZipPassword(const char* archivePath, const char* charset, int maxLength, const char* fileDecrypt) {
     int charsetLength = strlen(charset); // Longueur de l'ensemble de caractères possibles pour le mot de passe
     int* indices = (int*)malloc(maxLength * sizeof(int)); // Tableau d'indices pour générer les combinaisons de caractères
     int err;
@@ -510,9 +523,10 @@ int bruteForceZipPassword(const char* archivePath, const char* charset, int maxL
             for (i = 0; i < passwordLength; i++) {
                 password[i] = charset[indices[i]]; // Construit le mot de passe en utilisant les caractères correspondants aux indices
             }
-
-            int result = zip_set_default_password(archive, password); // Définit le mot de passe par défaut pour l'archive
-            if (result == 0) {
+	
+            zip_set_default_password(archive, password);
+            int result = zip_fopen_encrypted(archive, fileDecrypt, 0, password);
+            if (result != NULL) {
                 printf("Mot de passe trouvé : %s\n", password); // Affiche le mot de passe trouvé
                 foundPassword = 1;
                 break;
@@ -555,7 +569,7 @@ int bruteForceZipPassword(const char* archivePath, const char* charset, int maxL
 }
 
 
-int bruteForceZipPasswordDictionnary(const char* archivePath, const char* dictionaryPath, int maxLength) {
+int bruteForceZipPasswordDictionnary(const char* archivePath, const char* dictionaryPath, const char* fileDecrypt) {
     int err;
     struct zip* archive = zip_open(archivePath, 0, &err);
     if (!archive) {
@@ -578,15 +592,12 @@ int bruteForceZipPasswordDictionnary(const char* archivePath, const char* dictio
         if (password[passwordLength - 1] == '\n')
             password[--passwordLength] = '\0';
 
-        if (passwordLength <= maxLength) {
-            zip_set_default_password(archive, password);
-            int result = zip_fopen_encrypted(archive, "hihi", 0, password);
+            int result = zip_fopen_encrypted(archive, fileDecrypt, 0, password);
             if (result != NULL) {
                 printf("Mot de passe trouvé : %s\n", password);
                 foundPassword = 1;
                 break;
             }
-        }
     }
 
     fclose(dictionary);
