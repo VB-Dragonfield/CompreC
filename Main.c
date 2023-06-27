@@ -7,7 +7,6 @@
 
 void explorerArchiveRepertoire(struct zip* archive, const char* cheminRepertoire);
 void explorerArchiveZip(const char* cheminArchive);
-void explorerArchiveZipPassword(const char* cheminArchive, const char* password);
 int extraireFichierArchive(const char* cheminArchive, const char* cheminFichier, const char* cheminDestination);
 int extraireFichierArchivePassword(const char* cheminArchive, const char* cheminFichier, const char* cheminDestination, const char* password);
 int inclureFichierArchive(const char* cheminArchive, const char* cheminFichier, const char* cheminDestination);
@@ -98,11 +97,6 @@ int main(int argc, char* argv[]) {
 
     if (openArchive != NULL && fileInclude != NULL) {
         inclureFichierArchive(openArchive, fileInclude, cheminDestination); // Inclut un fichier dans l'archive
-        exit(0);
-    }
-
-    if (openArchive != NULL && usePassword != NULL) {
-        explorerArchiveZipPassword(openArchive, usePassword); // Explore l'archive avec le mot de passe spécifié
         exit(0);
     }
     
@@ -232,69 +226,6 @@ void explorerArchiveZip(const char* cheminArchive)
         }
     }
 
-    zip_close(archive); // Ferme l'archive
-}
-
-void explorerArchiveZipPassword(const char* cheminArchive, const char* password)
-{
-    struct zip* archive = zip_open(cheminArchive, 0, NULL); // Ouverture de l'archive ZIP spécifiée par le chemin
-
-    char answer[250];
-
-
-    if (!archive)
-    {
-        printf("Impossible d'ouvrir l'archive : %s\n", cheminArchive); // Affiche un message d'erreur si l'ouverture de l'archive échoue
-        return;
-    }
-
-    zip_set_default_password(archive, password); // Définition du mot de passe par défaut pour l'archive
-
-    int numFichiers = zip_get_num_entries(archive, 0); // Obtient le nombre de fichiers dans l'archive
-    printf("Nombre de fichiers dans l'archive : %d\n", numFichiers); // Affiche le nombre de fichiers
-
-    for (int i = 0; i < numFichiers; i++)
-    {
-        struct zip_stat fileStat; // Structure pour stocker les informations sur le fichier
-        if (zip_stat_index(archive, i, 0, &fileStat) < 0) // Récupère les informations du fichier à l'index i
-        {
-            printf("Erreur lors de la récupération des informations du fichier %d\n", i); // Affiche une erreur si la récupération des informations échoue
-            continue; // Passe à l'itération suivante
-        }
-
-        const char* nomFichier = fileStat.name; // Nom du fichier
-
-        // Vérifie si le nom se termine par '/' pour identifier un répertoire
-        if (nomFichier[strlen(nomFichier) - 1] == '/')
-        {
-            printf("Répertoire : %s\n", nomFichier); // Affiche le nom en tant que répertoire
-        }
-        else
-        {
-            printf("Fichier : %s\n", nomFichier); // Affiche le nom en tant que fichier
-        }
-    }
-
-    printf("\nVoulez vous explorer un répertoire ? Si oui lequel (entrez l'ensemble du chemin au sein de l'archive (ATTENTION SENSIBLE A LA CASSE))\nSinon tapez 'N' :");
-    scanf("%s", answer);
-    
-
-    if (strcmp(answer, "N") != 0){
-
-        explorerArchiveRepertoire(archive, answer);
-    }
-        
-    else {
-        printf("\nVoulez vous lire le contenu d'un fichier ? Si oui lequel (entrez l'ensemble du chemin au sein de l'archive (ATTENTION SENSIBLE A LA CASSE))\nSinon tapez 'N' :");
-        scanf("%s", answer);
-        
-
-        if (strcmp(answer, "N") != 0){
-
-            lireContenuFichierArchive(archive, answer);
-        }
-    }
-    
     zip_close(archive); // Ferme l'archive
 }
 
