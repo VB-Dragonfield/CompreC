@@ -386,7 +386,6 @@ int inclureFichierArchive(const char* cheminArchive, const char* cheminFichier, 
     }
 
     fseek(fichier, 0, SEEK_END); // Positionnement à la fin du fichier pour obtenir sa taille
-    long tailleFichier = ftell(fichier); // Obtention de la taille du fichier
     fseek(fichier, 0, SEEK_SET); // Retour à la position initiale du fichier
 
     struct zip* archive = zip_open(cheminArchive, 0, NULL); // Ouverture de l'archive spécifiée par le chemin
@@ -441,7 +440,6 @@ int inclureFichierArchivePassword(const char* cheminArchive, const char* cheminF
     }
 
     fseek(fichier, 0, SEEK_END); // Positionnement à la fin du fichier pour obtenir sa taille
-    long tailleFichier = ftell(fichier); // Obtention de la taille du fichier
     fseek(fichier, 0, SEEK_SET); // Retour à la position initiale du fichier
     
     struct zip* archive = zip_open(cheminArchive, 0, NULL); // Ouverture de l'archive spécifiée par le chemin
@@ -540,7 +538,7 @@ int bruteForceZipPassword(const char* archivePath, const char* charset, int maxL
 
 	
             zip_set_default_password(archive, password);
-            int result = zip_fopen_encrypted(archive, fileDecrypt, 0, password);
+            zip_file_t * result = zip_fopen_encrypted(archive, fileDecrypt, 0, password);
             if (result != NULL) {
 
                 printf("Mot de passe trouvé : %s\n", password); // Affiche le mot de passe trouvé
@@ -609,7 +607,7 @@ int bruteForceZipPasswordDictionnary(const char* archivePath, const char* dictio
         if (password[passwordLength - 1] == '\n')
             password[--passwordLength] = '\0';
 
-        int result = zip_fopen_encrypted(archive, fileDecrypt, 0, password);
+        zip_file_t * result = zip_fopen_encrypted(archive, fileDecrypt, 0, password);
       
         if (result != NULL) {
             printf("Mot de passe trouvé : %s\n", password);
@@ -629,6 +627,5 @@ int bruteForceZipPasswordDictionnary(const char* archivePath, const char* dictio
 
     return 0;
 }
-
 
 
