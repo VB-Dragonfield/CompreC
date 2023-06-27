@@ -396,7 +396,7 @@ int inclureFichierArchive(const char* cheminArchive, const char* cheminFichier, 
         return -1;
     }
 
-    struct zip_source* source = zip_file_add(archive, cheminFichier, 0, -1); // Création d'une source à partir du fichier source
+    struct zip_source* source = zip_source_file(archive, cheminFichier, 0, -1); // Création d'une source à partir du fichier source
     if (!source)
     {
         printf("Impossible de créer la source pour le fichier : %s\n", cheminFichier); // Affiche un message d'erreur si la création de la source échoue
@@ -453,7 +453,7 @@ int inclureFichierArchivePassword(const char* cheminArchive, const char* cheminF
     // Définir le mot de passe par défaut
     zip_set_default_password(archive, password); // Définition du mot de passe par défaut pour l'archive
     
-    struct zip_source* source = zip_file_add(archive, cheminFichier, 0, -1); // Création d'une source à partir du fichier source
+    struct zip_source* source = zip_source_file(archive, cheminFichier, 0, -1); // Création d'une source à partir du fichier source
     if (!source)
     {
         printf("Impossible de créer la source pour le fichier : %s\n", cheminFichier); // Affiche un message d'erreur si la création de la source échoue
